@@ -7,9 +7,18 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
-  end
+	@all_ratings = Movie.ratings
+	session[:sort_by] = params[:sort_by] ? params[:sort_by] : session[:sort_by]
+	session[:ratings] = (params[:commit] or params[:ratings]) ? params[:ratings] : session[:ratings]
+	@ratings = session[:ratings] ? session[:ratings].keys : []
 
+	if @ratings.empty?
+		@movies = Movie.order("#{session[:sort_by]}").all
+	else
+		@movies = Movie.order("#{session[:sort_by]}").find_all_by_rating(@ratings)
+	end
+  end
+  
   def new
     # default: render 'new' template
   end
@@ -38,4 +47,4 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
-end
+end 
