@@ -10,6 +10,11 @@ class MoviesController < ApplicationController
 	@all_ratings = Movie.ratings
 	session[:sort_by] = params[:sort_by] ? params[:sort_by] : session[:sort_by]
 	session[:ratings] = (params[:commit] or params[:ratings]) ? params[:ratings] : session[:ratings]
+  
+  if (session[:sort_by] != params[:sort_by] or session[:ratings] != params[:ratings])
+          redirect_to movies_path(:sort_by => session[:sort_by], :ratings => session[:ratings])
+  end
+
 	@ratings = session[:ratings] ? session[:ratings].keys : []
 
 	if @ratings.empty?
